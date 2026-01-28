@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -7,12 +8,13 @@ const { Pool } = require("pg");
 const { PrismaPg } = require("@prisma/adapter-pg");
 
 const loginRoute = require("./routes/login");
+const registerRoute = require("./routes/register");
 
 const app = express();
 
 // Create PostgreSQL connection pool
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL,
 });
 
 // Create adapter
@@ -68,5 +70,6 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/login", loginRoute);
+app.use("/register", registerRoute);
 
 module.exports = app;
