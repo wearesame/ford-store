@@ -1,3 +1,13 @@
 # ford-store
 
-store website
+```bash
+npx prisma db push
+ ```
+
+```bash
+npx prisma generate
+```
+
+```bash
+npm run dev
+```

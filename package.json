@@ -4,14 +4,14 @@
   "description": "store website",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm:dev:ts\" \"npm:dev:css\"",
+    "dev": "concurrently \"npm:dev:ts\" \"npm:dev:css\" \"npm:db:studio\"",
     "dev:ts": "nodemon server.js",
     "dev:css": "npx @tailwindcss/cli -i ./main.css -o ./public/style.css --watch",
     "db:generate": "npx prisma generate",
     "db:migrate": "npx prisma migrate dev",
     "db:reset": "npx prisma migrate reset",
     "db:push": "npx prisma db push",
-    "db:studio": "npx prisma studio",
+    "db:studio": "npx prisma studio --browser none",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pre:write": "bunx prettier . --write"
   },

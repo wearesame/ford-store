@@ -28,21 +28,21 @@
                         </strong>
 
                     </span>
-                    <% if (user.role == "ADMIN") { %>
-                    <a href="/dashboard" class="btn-primary">
-                        <i class="ph ph-house"></i> Dashboard
-                    </a>
-                    <% } %>
-
-                    <a href="/login/logout" class="btn-danger">
-                        <i class="ph ph-sign-out"></i> ออกจากระบบ
-                    </a>
-                    <% } else { %>
-                        <!-- ยังไม่ login -->
-                        <a href="/login" class="btn-primary">
-                            <i class="ph ph-sign-in"></i> เข้าสู่ระบบ
+                    <% if (user.role=="ADMIN" ) { %>
+                        <a href="/dashboard" class="btn-primary">
+                            <i class="ph ph-house"></i> Dashboard
                         </a>
                         <% } %>
+
+                            <a href="/login/logout" class="btn-danger">
+                                <i class="ph ph-sign-out"></i> ออกจากระบบ
+                            </a>
+                            <% } else { %>
+                                <!-- ยังไม่ login -->
+                                <a href="/login" class="btn-primary">
+                                    <i class="ph ph-sign-in"></i> เข้าสู่ระบบ
+                                </a>
+                                <% } %>
             </nav>
         </div>
     </header>

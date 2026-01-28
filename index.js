@@ -10,8 +10,8 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 const index = require("./routes/index")
 const loginRoute = require("./routes/login");
 const registerRoute = require("./routes/register");
-const dashboardRoute = require("./routes/dashboard")
 const productRoute = require("./routes/product")
+const adminRoute = require("./routes/admin")
 
 const app = express();
 
@@ -56,7 +56,7 @@ app.use(
         cookie: {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60 * 24, // 1 day
+            maxAge: 1000 * 60 * 60 * 24,
         },
         store: new PrismaSessionStore(prisma, {
             checkPeriod: 2 * 60 * 1000,
@@ -74,6 +74,6 @@ app.use("/", index)
 app.use("/login", loginRoute);
 app.use("/product", productRoute)
 app.use("/register", registerRoute);
-app.use("/dashboard", dashboardRoute);
+app.use("/dashboard", adminRoute);
 
 module.exports = app;
