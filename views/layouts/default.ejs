@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/assets/icons.js"></script>
+</head>
+
+<body>
+    <header class="fixed py-2 px-4 top-0 bg-[var(--bg-surface)] mb-2 shadow w-full">
+        <div class="flex justify-between items-center max-w-5xl mx-auto">
+            <div class="transition-transform">
+                <a href="/">
+                    <img class="w-5 h-5" src="https://webring.wonderful.software/webring.black.svg" alt="" />
+                </a>
+            </div>
+            <nav>
+                <a href="/login" class="btn-primary"><i class="ph ph-sign-in"></i>เข้าสู่ระบบ</a>
+            </nav>
+        </div>
+    </header>
+    <main><%- body %></main>
+</body>
+
+</html>

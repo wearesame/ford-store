@@ -1,0 +1,39 @@
+{
+  "name": "ford-store",
+  "version": "1.0.0",
+  "description": "store website",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm:dev:ts\" \"npm:dev:css\"",
+    "dev:ts": "nodemon server.js",
+    "dev:css": "npx @tailwindcss/cli -i ./main.css -o ./public/style.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pre:write": "bunx prettier . --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wearesame/ford-store.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/wearesame/ford-store/issues"
+  },
+  "homepage": "https://github.com/wearesame/ford-store#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.11",
+    "prettier-plugin-ejs": "^1.0.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "prettier": "3.8.1",
+    "tailwindcss": "^4.1.18"
+  }
+}

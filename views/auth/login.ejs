@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <title>
+        <%= title %>
+    </title>
+    <script type="text/javascript">
+        $(document).ready(() => {
+
+            $("#form").submit((event) => {
+                event.preventDefault();
+
+                const data = $('#form').serialize();
+                console.log(data);
+                $.ajax({
+                    type: 'POST',
+                    url: '/login',
+                    data: $('#form').serialize(),
+                    dataType: "json",
+                    success: (response) => {
+                        $('#form')[0].reset();
+                        document.getElementById("check").innerHTML = response.Success;
+                        //ADD THIS CODE
+                        setTimeout(() => {
+                            document.getElementById("check").innerHTML = "";
+                        }, 3000);
+                        if (response.Success == "Success!") {
+                            document.getElementById("aa").click();
+                        };
+                    },
+                    error: () => {
+                    }
+
+                })
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div class="flex justify-center items-center h-screen">
+        <form id="form" action="/login" method="post" class="flex flex-col gap-2">
+            <h1>login</h1>
+            <input type="text" name="email" placeholder="E-mail" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="btn-primary w-full">เข้าสู่ระบบ</button>
+        </form>
+    </div>
+</body>
+
+</html>
