@@ -1,10 +1,25 @@
 const express = require("express");
 const path = require("path");
+const session = require("express-session");
+const { PrismaClient } = require("./generated/prisma");
+const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
+const { Pool } = require("pg");
+const { PrismaPg } = require("@prisma/adapter-pg");
+
+const loginRoute = require("./routes/login");
 
 const app = express();
-const expressLayouts = require("express-ejs-layouts");
 
-const loginRoute = require("./routes/login")
+// Create PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+// Create adapter
+const adapter = new PrismaPg(pool);
+
+// Initialize Prisma Client with adapter (required in Prisma 7)
+const prisma = new PrismaClient({ adapter });
 
 const rootDir =
     process.env.NODE_ENV === "production"
@@ -19,12 +34,31 @@ app.set("views", path.join(rootDir, "views"));
 app.use(express.static(path.join(rootDir, "public")));
 
 // Layouts
-app.use(expressLayouts);
+app.use(require("express-ejs-layouts"));
 app.set("layout", "layouts/default");
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Session with Prisma Store
+app.use(
+    session({
+        name: "sid",
+        secret: process.env.SESSION_SECRET || "work hard",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 60 * 24, // 1 day
+        },
+        store: new PrismaSessionStore(prisma, {
+            checkPeriod: 2 * 60 * 1000,
+            dbRecordIdIsSessionId: true,
+        }),
+    })
+);
 
 // Routes
 app.get("/", (_req, res) => {
@@ -33,6 +67,6 @@ app.get("/", (_req, res) => {
     });
 });
 
-app.use("/login", loginRoute)
+app.use("/login", loginRoute);
 
 module.exports = app;

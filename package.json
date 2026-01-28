@@ -7,6 +7,11 @@
     "dev": "concurrently \"npm:dev:ts\" \"npm:dev:css\"",
     "dev:ts": "nodemon server.js",
     "dev:css": "npx @tailwindcss/cli -i ./main.css -o ./public/style.css --watch",
+    "db:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate dev",
+    "db:reset": "npx prisma migrate reset",
+    "db:push": "npx prisma db push",
+    "db:studio": "npx prisma studio",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pre:write": "bunx prettier . --write"
   },
@@ -23,17 +28,25 @@
   },
   "homepage": "https://github.com/wearesame/ford-store#readme",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "@quixo3/prisma-session-store": "^3.1.19",
     "@tailwindcss/cli": "^4.1.18",
+    "dotenv": "^17.2.3",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.19.0",
     "multer": "^2.0.2",
     "nodemon": "^3.1.11",
+    "pg": "^8.17.2",
     "prettier-plugin-ejs": "^1.0.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.16.0",
     "concurrently": "^9.2.1",
     "prettier": "3.8.1",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4.1.18"
   }
 }
