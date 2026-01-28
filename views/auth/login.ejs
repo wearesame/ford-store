@@ -66,6 +66,7 @@
                     data: JSON.stringify(formData),
                     success: function(response) {
                         // แสดง SweetAlert เมื่อสำเร็จ
+                        console.log(response.data)
                         Swal.fire({
                             icon: 'success',
                             title: 'สำเร็จ!',

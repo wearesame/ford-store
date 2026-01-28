@@ -6,80 +6,84 @@ const router = express.Router();
 
 // GET - แสดงหน้า login
 router.get("/", (_req, res) => {
-    res.render("auth/login", {
-        title: "Login"
-    });
+	res.render("auth/login", {
+		title: "Login"
+	});
 });
 
 // POST - เข้าสู่ระบบ
 router.post("/", async (req, res) => {
-    try {
-        const { username, password } = req.body;
+	try {
+		const { username, password } = req.body;
 
-        // 1. Validation
-        if (!username || !password) {
-            return res.status(400).json({
-                status: "error",
-                msg: "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน"
-            });
-        }
+		// 1. Validation
+		if (!username || !password) {
+			return res.status(400).json({
+				status: "error",
+				msg: "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน"
+			});
+		}
 
-        // 2. หา user ในฐานข้อมูล
-        const user = await prisma.user.findUnique({
-            where: { username }
-        });
+		// 2. หา user ในฐานข้อมูล
+		const user = await prisma.user.findUnique({
+			where: { username }
+		});
 
-        if (!user) {
-            return res.status(401).json({
-                status: "error",
-                msg: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
-            });
-        }
+		if (!user) {
+			return res.status(401).json({
+				status: "error",
+				msg: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+			});
+		}
 
-        // 3. ตรวจสอบรหัสผ่าน
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+		// 3. ตรวจสอบรหัสผ่าน
+		const isPasswordValid = await bcrypt.compare(password, user.password);
 
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                status: "error",
-                msg: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
-            });
-        }
+		if (!isPasswordValid) {
+			return res.status(401).json({
+				status: "error",
+				msg: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+			});
+		}
 
-        // 4. เก็บข้อมูลใน session
-        req.session.user = {
-            id: user.id,
-            username: user.username
-        };
+		req.session.regenerate((err) => {
+			if (err) throw err;
 
-        // 5. ส่งข้อมูลกลับ
-        res.json({
-            status: "success",
-            msg: "เข้าสู่ระบบสำเร็จ",
-            data: {
-                id: user.id,
-                username: user.username
-            }
-        });
+			req.session.user = {
+				id: user.id,
+				username: user.username,
+				role: user.role
+			};
 
-    } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({
-            status: "error",
-            msg: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
-            error: process.env.NODE_ENV === "development" ? error.message : undefined
-        });
-    }
+			res.json({
+				status: "success",
+				msg: "เข้าสู่ระบบสำเร็จ",
+				data: {
+					id: user.id,
+					username: user.username,
+					role: user.role
+				}
+			});
+		});
+
+	} catch (error) {
+		console.error("Login error:", error);
+		res.status(500).json({
+			status: "error",
+			msg: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",
+			error: process.env.NODE_ENV === "development" ? error.message : undefined
+		});
+	}
 });
 
 // GET - ออกจากระบบ
 router.get("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Logout error:", err);
-        }
-        res.redirect('/login');
-    });
+	req.session.destroy((err) => {
+		if (err) {
+			console.error("Logout error:", err);
+		}
+		res.redirect('/login');
+	});
 });
 
 module.exports = router;

@@ -7,8 +7,11 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const { Pool } = require("pg");
 const { PrismaPg } = require("@prisma/adapter-pg");
 
+const index = require("./routes/index")
 const loginRoute = require("./routes/login");
 const registerRoute = require("./routes/register");
+const dashboardRoute = require("./routes/dashboard")
+const productRoute = require("./routes/product")
 
 const app = express();
 
@@ -48,7 +51,7 @@ app.use(
     session({
         name: "sid",
         secret: process.env.SESSION_SECRET || "work hard",
-        resave: false,
+        resave: true,
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
@@ -62,14 +65,15 @@ app.use(
     })
 );
 
-// Routes
-app.get("/", (_req, res) => {
-    res.render("index", {
-        title: "สวัสดีครับจารย์ดุล",
-    });
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
 });
 
+app.use("/", index)
 app.use("/login", loginRoute);
+app.use("/product", productRoute)
 app.use("/register", registerRoute);
+app.use("/dashboard", dashboardRoute);
 
 module.exports = app;

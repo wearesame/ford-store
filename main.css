@@ -10,7 +10,11 @@ body {
 }
 
 .btn-primary {
-    @apply bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center;
+    @apply bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center cursor-pointer transition-colors duration-150 ease-in-out hover:bg-purple-500/30;
+}
+
+.btn-danger {
+    @apply bg-red-500/20 text-red-500 px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center;
 }
 
 main {
