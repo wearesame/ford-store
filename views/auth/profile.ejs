@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+<div class="container mx-auto py-10 max-w-xl">
+
+  <!-- PROFILE CARD -->
+  <div class="bg-white rounded-xl shadow p-6 text-center">
+
+    <img
+      src="<%= user.avatar %>"
+      class="w-32 h-32 rounded-2xl mx-auto mb-4 object-cover"
+    />
+
+    <p class="font-semibold text-lg">
+      <%= user.fname %> <%= user.lname %>
+    </p>
+
+    <p class="text-gray-500">@<%= user.username %></p>
+
+  </div>
+
+  <!-- FORM -->
+  <form
+    id="profileForm"
+    action="/profile"
+    method="POST"
+    enctype="multipart/form-data"
+    class="bg-white mt-6 p-6 rounded-xl shadow space-y-4"
+  >
+
+    <!-- Firstname -->
+    <div>
+      <label>ชื่อจริง</label>
+      <input
+        name="fname"
+        value="<%= user.fname %>"
+        class="w-full border p-2 rounded"
+        required
+      />
+    </div>
+
+    <!-- Lastname -->
+    <div>
+      <label>นามสกุล</label>
+      <input
+        name="lname"
+        value="<%= user.lname %>"
+        class="w-full border p-2 rounded"
+        required
+      />
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label>รหัสผ่านใหม่</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="w-full border p-2 rounded"
+        placeholder="เว้นว่างถ้าไม่เปลี่ยน"
+      />
+      <p id="passwordError" class="text-red-500 text-sm hidden">
+        ต้องมีอย่างน้อย 6 ตัวอักษร
+      </p>
+    </div>
+
+    <!-- Avatar -->
+    <div>
+      <label>รูปโปรไฟล์</label>
+      <input
+        type="file"
+        name="profileImage"
+        onchange="previewImage(event)"
+        class="w-full"
+      />
+
+      <img
+        id="profileImagePreview"
+        src="<%= user.avatar %>"
+        class="w-24 h-24 rounded-2xl object-cover mt-3"
+      />
+    </div>
+
+    <button
+      class="w-full btn-primary"
+    >
+      บันทึก
+    </button>
+
+  </form>
+
+</div>
+
+<!-- Toast -->
+<div
+  id="toast"
+  class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded hidden"
+>
+  บันทึกข้อมูลแล้ว
+</div>
+
+<script>
+
+function previewImage(event){
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById("profileImagePreview").src = reader.result;
+  };
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+$("#password").on("input", function(){
+  if($(this).val().length > 0 && $(this).val().length < 6){
+    $("#passwordError").removeClass("hidden");
+  }else{
+    $("#passwordError").addClass("hidden");
+  }
+});
+
+$("#profileForm").submit(function(){
+  $("#toast").removeClass("hidden");
+});
+
+</script>
+
+</body>
+</html>

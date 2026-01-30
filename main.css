@@ -1,39 +1,37 @@
 @import "tailwindcss";
 
 :root {
-    --bg-app: #f9f9f9;
-    --bg-surface: #fff;
+  --bg-app: #f9f9f9;
+  --bg-surface: #fff;
 }
 
 body {
   margin: 0;
   background: var(--bg-app);
-  position: relative;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url("https://avatars.githubusercontent.com/u/240631229?v=4");
-  background-size: cover;
-  background-position: center;
-  opacity: 0.05;
-  z-index: -1;
+  overflow-x: hidden;
+  /* font-size: 90%; */
 }
 
 .btn-primary {
-    @apply bg-purple-500/20 text-purple-500 px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center cursor-pointer transition-colors duration-150 ease-in-out hover:bg-purple-500/30;
+  @apply bg-black/95 text-white px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center cursor-pointer transition-colors duration-150 ease-in-out hover:bg-black/80;
 }
 
 .btn-danger {
-    @apply bg-red-500/20 text-red-500 px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center;
+  @apply bg-red-500/20 text-red-500 px-2 py-1 rounded-md text-[12px] flex gap-1 justify-center items-center;
 }
 
 main {
-    @apply max-w-5xl mx-auto px-4 md:px-0;
+  @apply max-w-5xl mx-auto px-4 md:px-0;
 }
 
 #form input {
-    @apply border border-black/10 bg-[var(--bg-surface)] rounded;
+  @apply border border-black/10 bg-[var(--bg-surface)] rounded;
+}
+
+.main-input {
+  @apply w-full px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500;
+}
+
+.logo {
+  @apply w-5 h-5 cursor-pointer hover:rotate-360 transition-transform duration-500;
 }

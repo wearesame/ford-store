@@ -1,96 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link href="/style.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><!= title !></title>
+    <link href="/style.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="h-screen flex justify-center items-center">
-        <div class="bg-white p-8 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold mb-6 text-center">เข้าสู่ระบบ</h2>
+      <div class="bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">เข้าสู่ระบบ</h2>
 
-            <form id="login-form">
-                <div class="mb-4">
-                    <label for="username" class="block text-gray-700 font-bold mb-2">
-                        ชื่อผู้ใช้
-                    </label>
-                    <input type="text" id="username" name="username"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                        required>
-                </div>
+        <form id="login-form">
+          <div class="mb-4">
+            <label for="username" class="block text-gray-700 font-bold mb-2">
+              ชื่อผู้ใช้
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
 
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-700 font-bold mb-2">
-                        รหัสผ่าน
-                    </label>
-                    <input type="password" id="password" name="password"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                        required minlength="6">
-                    <p class="text-sm text-gray-600 mt-1">รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร</p>
-                </div>
-
-                <button type="submit"
-                    class="btn-primary w-full h-10">
-                    เข้าสู่ระบบ
-                </button>
-            </form>
-
-            <p class="text-center mt-4 text-gray-600">
-                มีบัญชีอยู่แล้ว? <a href="/login" class="text-purple-500 hover:underline">เข้าสู่ระบบ</a>
+          <div class="mb-4">
+            <label for="password" class="block text-gray-700 font-bold mb-2">
+              รหัสผ่าน
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              required
+              minlength="6"
+            />
+            <p class="text-sm text-gray-600 mt-1">
+              รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร
             </p>
-        </div>
+          </div>
+
+          <button type="submit" class="btn-primary w-full h-10">
+            เข้าสู่ระบบ
+          </button>
+        </form>
+
+        <p class="text-center mt-4 text-gray-600">
+          ยังไม่มีบัญชี?
+          <a href="/register" class="text-purple-500 hover:underline"
+            >สมัครสมาชิก</a
+          >
+        </p>
+      </div>
     </div>
 
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('#login-form').on('submit', function(e) {
-                e.preventDefault();
+      $(document).ready(function () {
+        $("#login-form").on("submit", function (e) {
+          e.preventDefault();
 
-                // รวบรวมข้อมูลจากฟอร์ม
-                const formData = {
-                    username: $('#username').val(),
-                    password: $('#password').val(),
-                };
+          // รวบรวมข้อมูลจากฟอร์ม
+          const formData = {
+            username: $("#username").val(),
+            password: $("#password").val(),
+          };
 
-                // ส่งข้อมูลด้วย jQuery AJAX
-                $.ajax({
-                    url: '/login',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function(response) {
-                        // แสดง SweetAlert เมื่อสำเร็จ
-                        console.log(response.data)
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'สำเร็จ!',
-                            text: response.msg,
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then(function() {
-                            // Redirect ไป login page
-                            window.location.href = '/dashboard';
-                        });
-                    },
-                    error: function(xhr) {
-                        // แสดง SweetAlert เมื่อเกิดข้อผิดพลาด
-                        const response = xhr.responseJSON;
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'เกิดข้อผิดพลาด',
-                            text: response ? response.msg : 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
-                        });
-                    }
-                });
-            });
+          // ส่งข้อมูลด้วย jQuery AJAX
+          $.ajax({
+            url: "/login",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(formData),
+            success: function (response) {
+              // แสดง SweetAlert เมื่อสำเร็จ
+              Swal.fire({
+                icon: "success",
+                title: "สำเร็จ!",
+                text: response.msg,
+                showConfirmButton: false,
+                timer: 2000,
+              }).then(function () {
+                // Redirect ไป login page
+                window.location.href = "/";
+              });
+            },
+            error: function (xhr) {
+              // แสดง SweetAlert เมื่อเกิดข้อผิดพลาด
+              const response = xhr.responseJSON;
+              Swal.fire({
+                icon: "error",
+                title: "เกิดข้อผิดพลาด",
+                text: response ? response.msg : "เกิดข้อผิดพลาดในการเชื่อมต่อ",
+              });
+            },
+          });
         });
+      });
     </script>
-</body>
-
+  </body>
 </html>

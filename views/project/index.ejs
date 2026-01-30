@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= user.username %> - Mock API
+    </title>
+    <script src="https://cdn.jsdelivr.net/npm/@faker-js/faker@8.3.1/dist/faker.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .field-item {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="pt-15">
+        <div class="max-w-6xl mx-auto px-3 sm:px-4">
+            <!-- Header -->
+            <div class="flex items-center justify-between flex-nowrap mb-6">
+                <div class="flex items-center flex-nowrap gap-3 h-16 text-base font-mono font-medium">
+                    <a class="text-blue-700" href="/projects">Projects</a>
+                    <div class="text-gray-400 font-bold after:content-['/']"></div>
+                    <div class="flex flex-nowrap gap-3 items-start">
+                        <div class="max-w-[145px] sm:max-w-full">
+                            <div class="flex items-center gap-3 font-mono text-base">
+                                <div
+                                    class="flex-shrink-0 flex items-center justify-center w-9 h-9 uppercase rounded-xl text-lg font-bold shadow-md border-2 text-white bg-fuchsia-500 border-fuchsia-300 shadow-fuchsia-300/50 relative overflow-hidden">
+                                    <%= user.username.charAt(0).toUpperCase() %>
+                                        <img src="<%= user.avatar %>" class="absolute inset-0 w-full h-full object-cover" alt="">
+                                </div>
+                                <div class="whitespace-nowrap truncate">
+                                    <%= user.username %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Endpoint Card -->
+            <div class="mb-6">
+                <div class="rounded-3xl bg-white shadow -mx-4 sm:mx-auto">
+                    <div class="text-xl font-bold font-mono pt-4 px-4">
+                        API endpoint
+                    </div>
+                    <div class="overflow-x-auto py-2 px-4">
+                        <div class="h-7">
+                            <span class="text-blue-700 text-base font-mono">
+                                https://localhost:3000/
+                                <span class="p-1 rounded-lg bg-blue-100 border-blue-400 font-bold">
+                                    <%= user.id %>
+                                </span>
+                                <span class="p-1 rounded-lg bg-violet-100 border-violet-400 text-violet-700 font-bold">/
+                                    <%= user.username %>
+                                </span>
+                                <span
+                                    class="p-1 rounded-lg bg-orange-100 border-orange-400 text-orange-700 font-bold">/:endpoint</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between rounded-bl-3xl rounded-br-3xl p-4 bg-gray-50">
+                        <div class="flex-grow">
+                            <button onclick="openModal()"
+                                class="w-auto appearance-none truncate box-border transition active:scale-95 shadow active:shadow-sm border-2 border-transparent font-medium cursor-pointer bg-blue-500 shadow-blue-500/50 hover:bg-blue-600 active:bg-blue-700 text-white px-2 h-9 rounded-xl text-base">
+                                + New resource
+                            </button>
+                        </div>
+                        <div class="space-x-2 hidden sm:block">
+                            <button onclick="generateAll()"
+                                class="w-auto appearance-none truncate box-border transition active:scale-95 shadow active:shadow-sm hover:outline-none border-2 border-transparent font-medium cursor-pointer bg-gray-200 hover:bg-gray-300 active:bg-gray-300 text-gray-800 px-2 h-9 rounded-xl text-base">
+                                Generate all
+                            </button>
+                            <button onclick="resetAll()"
+                                class="w-auto appearance-none truncate box-border transition active:scale-95 shadow active:shadow-sm border-2 border-transparent font-medium cursor-pointer bg-rose-500 hover:bg-rose-600 active:bg-rose-700 text-white px-2 h-9 rounded-xl text-base">
+                                Reset all
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endpoints List -->
+            <div id="endpointsList" class="space-y-4">
+                <% if (endpoints && endpoints.length> 0) { %>
+                    <% endpoints.forEach((endpoint, index)=> { %>
+                        <div class="box-border -mx-4 px-4" data-endpoint-id="<%= endpoint.id %>">
+                            <div class="group inline-block">
+                                <div class="relative">
+                                    <div
+                                        class="absolute -inset-2 border-2 border-dashed border-transparent group-hover:border-gray-300 rounded-lg transition-all">
+                                    </div>
+                                    <div
+                                        class="relative flex items-center gap-3 bg-gray-200 rounded-lg px-3 py-2 min-w-[150px]">
+                                        <div class="w-6 h-6 rounded bg-gradient-to-br from-blue-400 to-blue-600"></div>
+                                        <a href="/<%= user.id %>/<%= user.username %>/<%= endpoint.name %>"
+                                            target="_blank"
+                                            class="font-mono font-medium text-sm hover:text-blue-700 transition">
+                                            <%= endpoint.name %>
+                                        </a>
+                                        <span
+                                            class="ml-auto text-sm font-semibold font-mono text-gray-900 bg-white px-2 py-0.5 rounded shadow-sm">
+                                            <%= endpoint.count || 0 %>
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="absolute left-full ml-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                                        <button onclick="viewData('<%= endpoint.id %>')"
+                                            class="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-xs font-medium">
+                                            Data
+                                        </button>
+                                        <button onclick="editEndpoint('<%= endpoint.id %>')"
+                                            class="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-xs font-medium">
+                                            Edit
+                                        </button>
+                                        <button onclick="deleteEndpoint('<%= endpoint.id %>')"
+                                            class="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-xs font-medium">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                            <% } else { %>
+                                <div class="text-center py-12 text-gray-500">
+                                    <p class="font-mono">No endpoints yet. Click "New resource" to create one.</p>
+                                </div>
+                                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for New/Edit Resource -->
+    <div id="resourceModal" class="modal">
+        <div class="bg-white rounded-2xl shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-2xl font-bold font-mono" id="modalTitle">Create New Resource</h2>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1">
+                <form id="resourceForm">
+                    <input type="hidden" id="endpointId" />
+
+                    <!-- Endpoint Name -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold font-mono mb-2">Endpoint Name</label>
+                        <input type="text" id="endpointName" placeholder="e.g., users, products, posts" required
+                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono">
+                    </div>
+
+                    <!-- Data Count -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold font-mono mb-2">Number of Records</label>
+                        <input type="number" id="dataCount" value="25" min="1" max="1000" required
+                            class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono">
+                    </div>
+
+                    <!-- Schema Fields -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-bold font-mono">Schema Fields</label>
+                            <button type="button" onclick="addField()"
+                                class="px-3 py-1 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition">
+                                + Add Field
+                            </button>
+                        </div>
+                        <div id="schemaFields" class="space-y-3">
+                            <!-- Fields will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Faker.js Examples -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+                        <a href="https://fakerjs.dev/api/" target="_blank"
+                            class="text-blue-600 underline text-xs mt-2 inline-block">
+                            View Full Documentation →
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+                <button type="button" onclick="closeModal()"
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition">
+                    Cancel
+                </button>
+                <button type="button" onclick="saveResource()"
+                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                    Create Resource
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for View Data -->
+    <div id="dataModal" class="modal">
+        <div class="bg-white rounded-2xl shadow-xl max-w-5xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="p-2 flex justify-between items-center">
+                <button onclick="closeDataModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1">
+                <pre id="dataContent"
+                    class="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { faker } = window;
+        const userId = '<%= user.id %>';
+        const username = '<%= user.username %>';
+
+        let fieldCounter = 0;
+
+        // Open modal
+        function openModal() {
+            $('#modalTitle').text('Create New Resource');
+            $('#endpointId').val('');
+            $('#endpointName').val('');
+            $('#dataCount').val(25);
+            $('#schemaFields').empty();
+            fieldCounter = 0;
+            addField(); // Add first field by default
+            $('#resourceModal').addClass('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            $('#resourceModal').removeClass('active');
+        }
+
+        // Close data modal
+        function closeDataModal() {
+            $('#dataModal').removeClass('active');
+        }
+
+        // Add field
+        function addField() {
+            fieldCounter++;
+            const fieldHtml = `
+                <div class="field-item flex gap-2" data-field-id="${fieldCounter}">
+                    <input type="text" placeholder="Field name (e.g., name)" 
+                        class="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm field-name" />
+                        <select class="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm field-faker">
+        <option value="person.firstName">person.firstName</option>
+        <option value="person.lastName">person.lastName</option>
+        <option value="person.jobTitle">person.jobTitle</option>
+        <option value="person.suffix">person.suffix</option>
+        <option value="person.prefix">person.prefix</option>
+        <option value="person.fullName">person.fullName</option>
+        <option value="person.gender">person.gender</option>
+        <option value="person.age">person.age</option>
+        <option value="address.city">address.city</option>
+        <option value="address.cityName">address.cityName</option>
+        <option value="address.cityPrefix">address.cityPrefix</option>
+        <option value="address.citySuffix">address.citySuffix</option>
+        <option value="address.country">address.country</option>
+        <option value="address.countryCode">address.countryCode</option>
+        <option value="address.state">address.state</option>
+        <option value="address.stateAbbr">address.stateAbbr</option>
+        <option value="address.zipCode">address.zipCode</option>
+        <option value="address.zipCodeByState">address.zipCodeByState</option>
+        <option value="address.latitude">address.latitude</option>
+        <option value="address.longitude">address.longitude</option>
+        <option value="internet.email">internet.email</option>
+        <option value="internet.userName">internet.userName</option>
+        <option value="internet.avatar">internet.avatar</option>
+        <option value="internet.domainName">internet.domainName</option>
+        <option value="internet.domainSuffix">internet.domainSuffix</option>
+        <option value="internet.ip">internet.ip</option>
+        <option value="internet.url">internet.url</option>
+        <option value="internet.userAgent">internet.userAgent</option>
+        <option value="internet.color">internet.color</option>
+        <option value="phone.phoneNumber">phone.phoneNumber</option>
+        <option value="phone.phoneNumberFormat">phone.phoneNumberFormat</option>
+        <option value="phone.phoneNumberExample">phone.phoneNumberExample</option>
+        <option value="company.name">company.name</option>
+        <option value="company.suffix">company.suffix</option>
+        <option value="company.catchPhrase">company.catchPhrase</option>
+        <option value="company.bs">company.bs</option>
+        <option value="company.industry">company.industry</option>
+        <option value="company.profession">company.profession</option>
+        <option value="company.companyName">company.companyName</option>
+        <option value="lorem.sentence">lorem.sentence</option>
+        <option value="lorem.word">lorem.word</option>
+        <option value="lorem.words">lorem.words</option>
+        <option value="lorem.paragraph">lorem.paragraph</option>
+        <option value="lorem.paragraphs">lorem.paragraphs</option>
+        <option value="lorem.text">lorem.text</option>
+        <option value="lorem.lines">lorem.lines</option>
+        <option value="commerce.productName">commerce.productName</option>
+        <option value="commerce.productAdjective">commerce.productAdjective</option>
+        <option value="commerce.productMaterial">commerce.productMaterial</option>
+        <option value="commerce.product">commerce.product</option>
+        <option value="commerce.price">commerce.price</option>
+        <option value="commerce.department">commerce.department</option>
+        <option value="commerce.category">commerce.category</option>
+        <option value="commerce.color">commerce.color</option>
+        <option value="commerce.productName">commerce.productName</option>
+        <option value="commerce.price">commerce.price</option>
+        <option value="commerce.productMaterial">commerce.productMaterial</option>
+        <option value="datatype.boolean">datatype.boolean</option>
+        <option value="datatype.number">datatype.number</option>
+        <option value="datatype.string">datatype.string</option>
+        <option value="datatype.uuid">datatype.uuid</option>
+        <option value="datatype.json">datatype.json</option>
+        <option value="datatype.array">datatype.array</option>
+        <option value="datatype.object">datatype.object</option>
+        <option value="date.past">date.past</option>
+        <option value="date.future">date.future</option>
+        <option value="date.recent">date.recent</option>
+        <option value="date.between">date.between</option>
+        <option value="date.month">date.month</option>
+        <option value="date.weekday">date.weekday</option>
+        <option value="image.imageUrl">image.imageUrl</option>
+        <option value="image.avatar">image.avatar</option>
+        <option value="image.image">image.image</option>
+        <option value="image.business">image.business</option>
+        <option value="image.nature">image.nature</option>
+        <option value="image.technics">image.technics</option>
+        <option value="image.sports">image.sports</option>
+        <option value="image.cats">image.cats</option>
+        <option value="image.food">image.food</option>
+    </select>
+
+                    <button type="button" onclick="removeField(${fieldCounter})" 
+                        class="px-3 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-sm transition">
+                        Remove
+                    </button>
+                </div>
+            `;
+            $('#schemaFields').append(fieldHtml);
+        }
+
+        // Remove field
+        function removeField(fieldId) {
+            $(`.field-item[data-field-id="${fieldId}"]`).remove();
+        }
+
+        // Generate fake data based on faker path
+        function generateFakeValue(fakerPath) {
+            try {
+                const parts = fakerPath.split('.');
+                let value = faker;
+
+                for (const part of parts) {
+                    value = value[part];
+                }
+
+                if (typeof value === 'function') {
+                    return value();
+                }
+                return value;
+            } catch (error) {
+                console.error('Error generating fake data:', error);
+                return null;
+            }
+        }
+
+        // Save resource
+        async function saveResource() {
+            const endpointName = $('#endpointName').val().trim();
+            const dataCount = parseInt($('#dataCount').val());
+            const endpointId = $('#endpointId').val();
+
+            if (!endpointName) {
+                alert('Please enter endpoint name');
+                return;
+            }
+
+            // Collect schema fields
+            const schema = [];
+            $('.field-item').each(function () {
+                const fieldName = $(this).find('.field-name').val().trim();
+                const fakerPath = $(this).find('.field-faker').val().trim();
+
+                if (fieldName && fakerPath) {
+                    schema.push({ name: fieldName, faker: fakerPath });
+                }
+            });
+
+            if (schema.length === 0) {
+                alert('Please add at least one field');
+                return;
+            }
+
+            // Generate mock data
+            const mockData = [];
+            for (let i = 0; i < dataCount; i++) {
+                const item = { id: i + 1 };
+                schema.forEach(field => {
+                    item[field.name] = generateFakeValue(field.faker);
+                });
+                item.createdAt = new Date().toISOString();
+                mockData.push(item);
+            }
+
+            // Send to server
+            try {
+                const url = endpointId ? `/endpoints/${endpointId}` : '/endpoints';
+                const method = endpointId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: endpointName,
+                        count: dataCount,
+                        schema: schema,
+                        data: mockData,
+                        userId: userId
+                    })
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + (error.message || 'Failed to save endpoint'));
+                }
+            } catch (error) {
+                console.error('Error saving endpoint:', error);
+                alert('Error saving endpoint');
+            }
+        }
+
+        // View data
+        async function viewData(endpointId) {
+            try {
+                const response = await fetch(`/endpoints/${endpointId}/data`);
+                if (response.ok) {
+                    const data = await response.json();
+                    $('#dataContent').text(JSON.stringify(data, null, 2));
+                    $('#dataModal').addClass('active');
+                } else {
+                    alert('Error loading data');
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading data');
+            }
+        }
+
+        // Edit endpoint
+        async function editEndpoint(endpointId) {
+            try {
+                const response = await fetch(`/endpoints/${endpointId}`);
+                console.log(endpointId);
+
+                if (response.ok) {
+                    const endpoint = await response.json();
+                    $('#modalTitle').text('Edit Resource');
+                    $('#endpointId').val(endpoint.id);
+                    $('#endpointName').val(endpoint.name);
+                    $('#dataCount').val(endpoint.count);
+                    $('#schemaFields').empty(); // ล้าง schema fields เก่าก่อน
+                    fieldCounter = 0; // รีเซ็ต counter
+
+                    let schema = [];
+                    try {
+                        schema = Array.isArray(endpoint.schema) ? endpoint.schema : JSON.parse(endpoint.schema);
+                    } catch (error) {
+                        console.error('Error parsing schema:', error);
+                    }
+
+                    if (schema.length > 0) {
+                        // แสดงฟิลด์ที่มีอยู่แล้ว
+                        schema.forEach((field, index) => {
+                            fieldCounter++;
+                            const fieldHtml = `
+                        <div class="field-item flex gap-2" data-field-id="${fieldCounter}">
+                            <input type="text" value="${field.name}" 
+                                class="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm field-name" />
+                                <select class="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm field-faker"  value="${field.faker}>
+        <option value="person.firstName">person.firstName</option>
+        <option value="person.lastName">person.lastName</option>
+        <option value="person.jobTitle">person.jobTitle</option>
+        <option value="person.suffix">person.suffix</option>
+        <option value="person.prefix">person.prefix</option>
+        <option value="person.fullName">person.fullName</option>
+        <option value="person.gender">person.gender</option>
+        <option value="person.age">person.age</option>
+        <option value="address.city">address.city</option>
+        <option value="address.cityName">address.cityName</option>
+        <option value="address.cityPrefix">address.cityPrefix</option>
+        <option value="address.citySuffix">address.citySuffix</option>
+        <option value="address.country">address.country</option>
+        <option value="address.countryCode">address.countryCode</option>
+        <option value="address.state">address.state</option>
+        <option value="address.stateAbbr">address.stateAbbr</option>
+        <option value="address.zipCode">address.zipCode</option>
+        <option value="address.zipCodeByState">address.zipCodeByState</option>
+        <option value="address.latitude">address.latitude</option>
+        <option value="address.longitude">address.longitude</option>
+        <option value="internet.email">internet.email</option>
+        <option value="internet.userName">internet.userName</option>
+        <option value="internet.avatar">internet.avatar</option>
+        <option value="internet.domainName">internet.domainName</option>
+        <option value="internet.domainSuffix">internet.domainSuffix</option>
+        <option value="internet.ip">internet.ip</option>
+        <option value="internet.url">internet.url</option>
+        <option value="internet.userAgent">internet.userAgent</option>
+        <option value="internet.color">internet.color</option>
+        <option value="phone.phoneNumber">phone.phoneNumber</option>
+        <option value="phone.phoneNumberFormat">phone.phoneNumberFormat</option>
+        <option value="phone.phoneNumberExample">phone.phoneNumberExample</option>
+        <option value="company.name">company.name</option>
+        <option value="company.suffix">company.suffix</option>
+        <option value="company.catchPhrase">company.catchPhrase</option>
+        <option value="company.bs">company.bs</option>
+        <option value="company.industry">company.industry</option>
+        <option value="company.profession">company.profession</option>
+        <option value="company.companyName">company.companyName</option>
+        <option value="lorem.sentence">lorem.sentence</option>
+        <option value="lorem.word">lorem.word</option>
+        <option value="lorem.words">lorem.words</option>
+        <option value="lorem.paragraph">lorem.paragraph</option>
+        <option value="lorem.paragraphs">lorem.paragraphs</option>
+        <option value="lorem.text">lorem.text</option>
+        <option value="lorem.lines">lorem.lines</option>
+        <option value="commerce.productName">commerce.productName</option>
+        <option value="commerce.productAdjective">commerce.productAdjective</option>
+        <option value="commerce.productMaterial">commerce.productMaterial</option>
+        <option value="commerce.product">commerce.product</option>
+        <option value="commerce.price">commerce.price</option>
+        <option value="commerce.department">commerce.department</option>
+        <option value="commerce.category">commerce.category</option>
+        <option value="commerce.color">commerce.color</option>
+        <option value="commerce.productName">commerce.productName</option>
+        <option value="commerce.price">commerce.price</option>
+        <option value="commerce.productMaterial">commerce.productMaterial</option>
+        <option value="datatype.boolean">datatype.boolean</option>
+        <option value="datatype.number">datatype.number</option>
+        <option value="datatype.string">datatype.string</option>
+        <option value="datatype.uuid">datatype.uuid</option>
+        <option value="datatype.json">datatype.json</option>
+        <option value="datatype.array">datatype.array</option>
+        <option value="datatype.object">datatype.object</option>
+        <option value="date.past">date.past</option>
+        <option value="date.future">date.future</option>
+        <option value="date.recent">date.recent</option>
+        <option value="date.between">date.between</option>
+        <option value="date.month">date.month</option>
+        <option value="date.weekday">date.weekday</option>
+        <option value="image.imageUrl">image.imageUrl</option>
+        <option value="image.avatar">image.avatar</option>
+        <option value="image.image">image.image</option>
+        <option value="image.business">image.business</option>
+        <option value="image.nature">image.nature</option>
+        <option value="image.technics">image.technics</option>
+        <option value="image.sports">image.sports</option>
+        <option value="image.cats">image.cats</option>
+        <option value="image.food">image.food</option>
+    </select>
+                                <button type="button" onclick="removeField(${fieldCounter})" 
+                                class="px-3 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-sm transition">
+                                Remove
+                            </button>
+                        </div>
+                    `;
+                            $('#schemaFields').append(fieldHtml); // เพิ่ม field ที่มีอยู่แล้ว
+                        });
+                    } else {
+                        console.log('No schema fields to display or schema is not an array');
+                    }
+
+                    $('#resourceModal').addClass('active'); // เปิด modal
+                } else {
+                    alert('Error loading endpoint');
+                }
+            } catch (error) {
+                console.log(endpointId);
+                console.error('Error loading endpoint:', error);
+                alert('Error loading endpoint');
+            }
+        }
+
+        function saveEndpointChanges() {
+            const endpointId = $('#endpointId').val();
+            const name = $('#endpointName').val();
+            const count = $('#dataCount').val();
+            const schema = [];
+
+            // เก็บข้อมูลจากฟอร์ม
+            $('#schemaFields .field-item').each(function () {
+                const fieldName = $(this).find('.field-name').val();
+                const fieldFaker = $(this).find('.field-faker').val();
+                schema.push({ name: fieldName, faker: fieldFaker });
+            });
+
+            const updatedEndpoint = {
+                id: endpointId,
+                name: name,
+                count: count,
+                schema: schema
+            };
+
+            // ส่ง PUT request เพื่ออัปเดตข้อมูล
+            fetch(`/endpoints/${endpointId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedEndpoint)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Endpoint updated successfully!');
+                    // ปิด modal หรืออัปเดต UI ตามต้องการ
+                    $('#resourceModal').removeClass('active');
+                    // อาจจะ reload หรืออัปเดตหน้าต่างเพื่อแสดงข้อมูลใหม่
+                })
+                .catch(error => {
+                    console.error('Error updating endpoint:', error);
+                    alert('Error updating endpoint');
+                });
+        }
+
+        // Delete endpoint
+        async function deleteEndpoint(endpointId) {
+            if (!confirm('Are you sure you want to delete this endpoint?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/endpoints/${endpointId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Error deleting endpoint');
+                }
+            } catch (error) {
+                console.error('Error deleting endpoint:', error);
+                alert('Error deleting endpoint');
+            }
+        }
+
+        // Generate all
+        async function generateAll() {
+            if (!confirm('This will regenerate all data for all endpoints. Continue?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/endpoints/generate-all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId })
+                });
+
+                if (response.ok) {
+                    alert('All data regenerated successfully');
+                    location.reload();
+                } else {
+                    alert('Error regenerating data');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error regenerating data');
+            }
+        }
+
+        // Reset all
+        async function resetAll() {
+            if (!confirm('This will delete ALL endpoints and data. This action cannot be undone. Continue?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/endpoints/reset-all', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId: userId })
+                });
+
+                if (response.ok) {
+                    alert('All endpoints deleted successfully');
+                    location.reload();
+                } else {
+                    alert('Error deleting endpoints');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error deleting endpoints');
+            }
+        }
+
+        // Close modal on background click
+        $(document).on('click', '.modal', function (e) {
+            if (e.target === this) {
+                $(this).removeClass('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

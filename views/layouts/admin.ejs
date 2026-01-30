@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= title %></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><!= title !></title>
     <link rel="stylesheet" href="/style.css" />
     <script src="/assets/icons.js"></script>
   </head>
 
   <body>
-    <header class="fixed py-2 px-4 top-0 bg-[var(--bg-surface)] mb-2 w-full">
-      <div class="flex justify-between items-center max-w-5xl mx-auto">
-        <div>
+    <div
+      class="flex flex-col p-4 *:rounded-md h-screen gap-2 *:border *:bg-[var(--bg-surface)] *:shadow *:border-black/10"
+    >
+      <div class="flex py-2 px-4 justify-between">
+        <div class="flex gap-2 items-center">
           <a href="/">
             <img
               class="logo"
@@ -17,24 +21,18 @@
               alt=""
             />
           </a>
+          <h1>กลับไปหน้าหลัก</h1>
         </div>
-
         <nav class="flex items-center gap-3">
           <% if (user) { %>
           <!-- login แล้ว -->
 
           <span class="text-sm text-gray-600 flex justify-center items-center">
             สวัสดี,
-            <a href="/profile">
+            <strong>
               <%= user.username %>
-            </a>
+            </strong>
           </span>
-          <a href="/projects" class="btn-primary"> โปรเจค </a>
-          <% if (user.role=="ADMIN" ) { %>
-          <a href="/dashboard" class="btn-primary">
-            <i class="ph ph-house"></i> Dashboard
-          </a>
-          <% } %>
 
           <a href="/login/logout" class="btn-danger">
             <i class="ph ph-sign-out"></i> ออกจากระบบ
@@ -47,8 +45,18 @@
           <% } %>
         </nav>
       </div>
-    </header>
+      <div class="flex h-[100%] gap-2 overflow-y-auto">
+        <div class="flex-1 p-4 flex flex-col gap-2">
+          <a class="btn-primary" href="/dashboard"
+            ><i class="ph ph-speedometer"></i> วิเคราะห์</a
+          >
+          <a class="btn-primary" href="/dashboard/users"
+            ><i class="ph ph-person-simple-run"></i>การจัดการผู้ใช้</a
+          >
+        </div>
 
-    <main><%- body %></main>
+        <div class="flex-8 p-4"><%- body %></div>
+      </div>
+    </div>
   </body>
 </html>

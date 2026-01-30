@@ -14,38 +14,37 @@ enum Role {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
+  id        String     @id @default(uuid(7))
   username  String     @unique
   password  String
+  fname     String
+  lname     String
+  address   String
+  phone     String
+  avatar String       @default("https://miro.medium.com/1*GI-td9gs8D5OKZd19mAOqA.png")
   role      Role       @default(USER)
   createdAt DateTime   @default(now())
-  purchases Purchase[]
-}
-
-model Product {
-  id          Int        @id @default(autoincrement())
-  name        String     @unique
-  image       String
-  description String
-  price       Int
-  createdAt   DateTime   @default(now())
-  purchases   Purchase[]
-}
-
-model Purchase {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  productId Int
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-
-  user    User    @relation(fields: [userId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
+  endpoints Endpoint[]
 }
 
 model Session {
-  id        String   @id
+  id        String   @id @default(uuid(7))
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+model Endpoint {
+  id        String   @id @default(uuid(7))
+  name      String // endpoint name (e.g., "products", "users")
+  count     Int      @default(0) // number of records
+  schema    String // JSON string of field definitions with Faker paths
+  data      String   @db.Text // JSON string of generated mock data
+  userId    String // owner of this endpoint
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@unique([userId, name]) // Each user can have one endpoint with a given name
+  @@index([userId])
 }

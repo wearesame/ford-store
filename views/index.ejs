@@ -1,25 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/tippy.js@6/animations/scale.css"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title><%= title %></title>
-  <script src="https://unpkg.com/@popperjs/core@2"></script>
-  <script src="https://unpkg.com/tippy.js@6"></script>
-  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css">
-</head>
+  <body>
+    <div class="max-w-6xl mx-auto">
+      <div
+        class="min-h-screen flex justify-center items-center mx-auto px-4 max-w-5xl"
+      >
+        <div class="flex-1 flex justify-center items-center">
+          <img
+            src="https://webring.wonderful.software/webring.black.svg"
+            class="w-[80%] cursor-pointer hover:rotate-360 transition-transform duration-500"
+            alt=""
+          />
+        </div>
+        <div class="px-4 flex-2 -mr-60">
+          <h1 class="text-6xl">AOCKAPI</h1>
+          <p>เราเข้าใจ frontend</p>
+          <p class="w-[60%] mb-2 text-[12px] text-black/70">
+            ตั้งค่าเอนด์พอยต์ สร้างข้อมูลที่กำหนดเอง
+            และดำเนินการกับข้อมูลเหล่านั้นได้อย่างรวดเร็วโดยใช้ส่วนต่อประสานแบบ
+            RESTful
+          </p>
+        </div>
+      </div>
 
-<body>
-  <div class="pt-15 max-w-6xl mx-auto">
-    <h1 class="text-xl font-bold mb-2"><%= title %></h1>
-    <p class="mb-4 text-gray-500">ทุกอย่างทำงานได้อิอิ</p>
+      <h1 class="text-xl font-bold mb-2 text-center"><%= title %></h1>
+      <p class="mb-4 text-gray-500 text-center">ทุกอย่างทำงานได้อิอิ</p>
 
-    <div
-      class="grid grid-cols-5 gap-2 *:rounded *:p-2 *:border *:border-black/10 *:bg-[var(--bg-surface)] *:shadow">
-
-      <% products.forEach(product => { %>
+      <div
+        class="grid grid-cols-5 gap-2 *:rounded *:p-2 *:bg-[var(--bg-surface)]"
+      >
+        <% products.forEach(product=> { %>
         <div class="flex flex-col justify-between">
-          <img class="rounded mb-1" src="<%= product.image %>" alt="">
+          <img class="rounded mb-1" src="<%= product.image %>" alt="" />
 
           <!-- product card -->
           <div
@@ -27,45 +50,39 @@
             data-name="<%= product.name %>"
             data-description="<%= product.description %>"
           >
-            <h2 class="font-bold truncate">
-              <%= product.name %>
-            </h2>
+            <h2 class="font-bold truncate"><%= product.name %></h2>
 
             <h3 class="line-clamp-2 text-[12px] text-black/60">
               <%= product.description %>
             </h3>
           </div>
 
-          <div class="mt-1 font-semibold">
-            $<%= product.price %>
-          </div>
+          <div class="mt-1 font-semibold">$<%= product.price %></div>
 
-          <a href="/product/<%= product.id %>" class="btn-primary mt-2">
+          <a href="/" class="btn-primary mt-2">
             <i class="ph ph-shopping-cart"></i> ซื้อเลย
           </a>
         </div>
-      <% }) %>
-
+        <% }) %>
+      </div>
     </div>
-  </div>
 
-  <!-- Tippy init -->
-  <script>
-    tippy('.product-card', {
-      content(reference) {
-        return `
+    <!-- Tippy init -->
+    <script>
+      tippy(".product-card", {
+        content(reference) {
+          return `
           <strong>${reference.dataset.name}</strong><br>
           ${reference.dataset.description}
         `;
-      },
-      allowHTML: true,
-      animation: 'scale',
-      placement: 'auto',
-      delay: [200, 0],
-      maxWidth: 320,
-      theme: 'dark',
-    });
-  </script>
-</body>
-
+        },
+        allowHTML: true,
+        animation: "scale",
+        placement: "auto",
+        delay: [200, 0],
+        maxWidth: 320,
+        theme: "dark",
+      });
+    </script>
+  </body>
 </html>

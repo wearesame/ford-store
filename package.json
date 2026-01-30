@@ -44,6 +44,7 @@
     "prettier-plugin-ejs": "^1.0.3"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.2.0",
     "@types/pg": "^8.16.0",
     "concurrently": "^9.2.1",
     "prettier": "3.8.1",

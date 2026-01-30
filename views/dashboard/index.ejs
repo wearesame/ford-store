@@ -1,20 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
-</head>
-
-<body>
-    <div class="pt-15">
-        <h1>welcome ไอ้สัส <%= user.username %>
-        </h1>
-        <a href="/dashboard/addProduct" class="btn-primary">เพิ่มสินค้า</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add Chart.js -->
+  </head>
+  <body>
+    <div>
+      <h1>ยินดีต้อนรับ ครับพี่ชาย <%= user.username %></h1>
+      <h2>Graph of New Users and Their Endpoints (Last 7 Weeks)</h2>
+      
+      <!-- Canvas for the chart -->
+      <canvas id="userStatsChart"></canvas>
     </div>
-</body>
 
+    <script>
+      // Data passed from backend (userStats)
+      const userStats = <%- JSON.stringify(userStats) %>;
+
+      // Extract usernames and endpoint counts
+      const usernames = userStats.map(stat => stat.username);
+      const endpointCounts = userStats.map(stat => stat.newEndpointsCount);
+
+      // Create the chart
+      const ctx = document.getElementById('userStatsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: usernames,
+          datasets: [{
+            label: 'Endpoints Created',
+            data: endpointCounts,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            }
+          }
+        }
+      });
+    </script>
+  </body>
 </html>
